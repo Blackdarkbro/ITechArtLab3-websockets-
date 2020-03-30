@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSockets</title>
+</head>
+
+<body>
+    <button onclick="startConnection()">Установить соединение</button>
+    <button onclick="closeConnection()">Разорвать соединение</button>
+    <div id="messages">
+    </div>
+
+    <script>
+        let socket;
+        let timer;
+
+        function startConnection() {
+            let messages = document.getElementById("messages");
+            messages.innerHTML = "";
+            let k = 0;
+
+            socket = new WebSocket("ws://localhost:4000/");
+
+            socket.onopen = () => {
+                alert("Соединение установлено");
+
+                timer = setInterval(() => {
+                    if (socket.readyState === 1) socket.send(`message №${++k}`)
+                }, 2000);
+            }
+
+            socket.onmessage = (event) => {
+                let message = event.data;
+
+                let htmlP = document.createElement("p");
+                htmlP.textContent = `message from server: ${message}`;
+
+                messages.appendChild(htmlP);
+            }
+
+        }
+
+        function closeConnection() {
+            alert("Соединение закрыто");
+
+            clearInterval(timer);
+            socket.close();
+        }
+    </script>
+</body>
+
+</html>

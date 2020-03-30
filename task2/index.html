@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSockets</title>
+</head>
+
+<body>
+    <form name="publish">
+        <input type="text" name="text">
+        <button id="submit">send</button>
+    </form>
+    <div id="messages">
+    </div>
+
+    <script>
+        let socket = new WebSocket("ws://localhost:4000/");
+
+        socket.onopen = () => {
+
+            socket.onmessage = (event) => {
+
+                let message = event.data;;
+
+                let htmlP = document.createElement("p");
+                htmlP.textContent = `${message}`;
+
+                messages.appendChild(htmlP);
+            }
+        }
+
+        document.forms.publish.onsubmit = function() {
+            socket.send(this.text.value);
+            return false;
+        }
+
+
+
+        // let socket;
+        // let timer;
+
+        // function startConnection() {
+        //     let messages = document.getElementById("messages");
+        //     messages.innerHTML = "";
+        //     let k = 0;
+
+
+
+
+        // }
+
+        function closeConnection() {
+            alert("Соединение закрыто");
+
+            clearInterval(timer);
+            socket.close();
+        }
+    </script>
+</body>
+
+</html>
